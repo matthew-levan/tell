@@ -1,4 +1,4 @@
-/-  *tell, hark
+/-  *tell, hark, chat
 /+  default-agent, dbug
 |%
 +$  versioned-state
@@ -33,16 +33,43 @@
     =/  msg  cord.cmd
     =/  mod  mode.cmd
     |^
-    ::  get the list of sponsees subscribed to our %kids
     =/  kids=(list ship)  (sponsored-ships our.bowl)
-    ::  create dm and notification cards for each kid
-    =/  cards=(list card)
-      %+  turn  kids
-      |=  kid=ship
+    ::  switch on the mode
+    ?:  =(mod %hark)
+      ::  get the list of sponsees subscribed to our %kids
+      ::  create a notification card for each kid
+      =/  cards=(list card)
+        %+  turn  kids
+        |=  kid=ship
+        ^-  card
+        (send-notification kid)
+        ~&  get-peers
+      [cards this]
+    ::
+    ?>  =(mod %chat)
+      ::  create a chat card for each kid
+      =/  cards=(list card)
+        %+  turn  kids
+        |=  kid=ship
+        ^-  card
+        (send-chat kid)
+      [cards this]
+    ::
+    ++  send-chat
+      |=  [who=ship]
       ^-  card
-      (send-notification kid)
-      ~&  get-peers
-    [cards this]
+      ::  action [pair ship diff=[echo grief]]
+      =/  =action:dm:chat
+        :*  who
+            [who now.bowl]
+            %add
+            replying=~
+            author=our.bowl
+            sent=now.bowl
+            content=[%story `~[msg]]
+        ==
+      ~&  action
+      [%pass /dm %agent [our.bowl %chat] %poke %dm-action !>(action)]
     ::
     ++  send-notification
       |=  [who=ship]
@@ -78,6 +105,15 @@
 ++  on-watch  on-watch:default
 ++  on-arvo   on-arvo:default
 ++  on-leave  on-leave:default
-++  on-agent  on-agent:default
+++  on-agent
+  |=  [=wire =sign:agent:gall]
+  ^-  (quip card _this)
+    [~ this]
+  :: ?+    wire  (on-agent:default wire sign)
+  ::     [%dm ~]
+  ::   ?.  ?=(%poke-ack -.sign)  (on-agent:default wire sign)
+  ::   ?~  p.sign  [~ this]
+  ::   ((slog 'tell: failed to notify' u.p.sign) [~ this])
+  :: ==
 ++  on-fail   on-fail:default
 --
