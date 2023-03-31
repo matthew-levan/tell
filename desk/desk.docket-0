@@ -1,0 +1,9 @@
+:~  title+'Tell'
+    info+'Send a message to all your sponsees.'
+    color+0xff.6666
+    site+/tell
+    base+'tell'
+    version+[0 0 1]
+    website+'https://urbit.org'
+    license+'MIT'
+==
