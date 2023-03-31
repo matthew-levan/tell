@@ -41,6 +41,7 @@
       |=  kid=ship
       ^-  card
       (send-notification kid)
+      ~&  get-peers
     [cards this]
     ::
     ++  send-notification
@@ -53,7 +54,9 @@
       =/  =rope:hark    [~ ~ q.byk.bowl /(scot %p who)/[dap.bowl]]
       =/  =action:hark  [%add-yarn & & id rope now.bowl con /[dap.bowl] ~]
       =/  =cage         [%hark-action !>(action)]
-      [%pass /hark %agent [who %hark] %poke cage]
+      =/  card  [%pass /hark %agent [who %hark] %poke cage]
+      ~&  card
+      card
     ::
     ++  get-peers
       ^-  (set ship)
