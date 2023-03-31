@@ -38,9 +38,9 @@
     ::  create dm and notification cards for each kid
     =/  cards=(list card)
       %+  turn  kids
-      |=  =kid
+      |=  kid=ship
       ^-  card
-      send-notification
+      (send-notification kid)
     [cards this]
     ::
     ++  send-notification
