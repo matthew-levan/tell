@@ -1,6 +1,5 @@
 |%
-+$  mode  ?(%hark %chat)
 +$  command
-  $%  [%broadcast [=cord =mode]]
+  $%  [%cast =cord]
   ==
 --

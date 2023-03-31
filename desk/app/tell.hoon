@@ -28,32 +28,18 @@
   ?>  ?=(%tell-command mark)
   =/  cmd  !<(command vase)
   ?-    -.cmd
-      %broadcast
+      %cast
     ?>  =(our.bowl src.bowl)
     =/  msg  cord.cmd
-    =/  mod  mode.cmd
     |^
     =/  kids=(list ship)  (sponsored-ships our.bowl)
-    ::  switch on the mode
-    ?:  =(mod %hark)
-      ::  get the list of sponsees subscribed to our %kids
-      ::  create a notification card for each kid
-      =/  cards=(list card)
-        %+  turn  kids
-        |=  kid=ship
-        ^-  card
-        (send-notification kid)
-        ~&  get-peers
-      [cards this]
-    ::
-    ?>  =(mod %chat)
-      ::  create a chat card for each kid
-      =/  cards=(list card)
-        %+  turn  kids
-        |=  kid=ship
-        ^-  card
-        (send-chat kid)
-      [cards this]
+    ::  create a chat card for each kid
+    =/  cards=(list card)
+      %+  turn  kids
+      |=  kid=ship
+      ^-  card
+      (send-chat kid)
+    [cards this]
     ::
     ++  send-chat
       |=  [who=ship]
@@ -70,20 +56,6 @@
         ==
       ~&  action
       [%pass /dm %agent [our.bowl %chat] %poke %dm-action !>(action)]
-    ::
-    ++  send-notification
-      |=  [who=ship]
-      ^-  card
-      =/  con=(list content:hark)
-        =-  [ship+who - ~]
-        emph+msg
-      =/  =id:hark      (end 7 (shas %tell-notification eny.bowl))
-      =/  =rope:hark    [~ ~ q.byk.bowl /(scot %p who)/[dap.bowl]]
-      =/  =action:hark  [%add-yarn & & id rope now.bowl con /[dap.bowl] ~]
-      =/  =cage         [%hark-action !>(action)]
-      =/  card  [%pass /hark %agent [who %hark] %poke cage]
-      ~&  card
-      card
     ::
     ++  get-peers
       ^-  (set ship)
@@ -105,15 +77,6 @@
 ++  on-watch  on-watch:default
 ++  on-arvo   on-arvo:default
 ++  on-leave  on-leave:default
-++  on-agent
-  |=  [=wire =sign:agent:gall]
-  ^-  (quip card _this)
-    [~ this]
-  :: ?+    wire  (on-agent:default wire sign)
-  ::     [%dm ~]
-  ::   ?.  ?=(%poke-ack -.sign)  (on-agent:default wire sign)
-  ::   ?~  p.sign  [~ this]
-  ::   ((slog 'tell: failed to notify' u.p.sign) [~ this])
-  :: ==
+++  on-agent  on-agent:default
 ++  on-fail   on-fail:default
 --
