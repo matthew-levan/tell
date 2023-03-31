@@ -1,4 +1,4 @@
-/-  *tell
+/-  *tell, hark
 /+  default-agent, dbug
 |%
 +$  versioned-state
@@ -71,18 +71,8 @@
     -- 
   ==
 ::
-++  on-peek
-  |=  =path
-  ^-  (unit (unit cage))
-  ?+  path  (on-peek:default path)
-    [%x %values ~]  ``noun+!>(values)
-  ==
-++  on-watch
-  |=  =path
-  ^-  (quip card _this)
-  ?>  ?=([%values ~] path)
-  :_  this
-  [%give %fact ~ %tell-update !>(`update`[%init values])]~
+++  on-peek  on-peek:default
+++  on-watch  on-watch:default
 ++  on-arvo   on-arvo:default
 ++  on-leave  on-leave:default
 ++  on-agent  on-agent:default
