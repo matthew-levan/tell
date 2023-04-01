@@ -1,5 +1,5 @@
 :~  title+'Tell'
-    info+'Send a message to all your sponsees.'
+    info+'Broadcast to all your sponsees.'
     color+0xff.6666
     site+/tell
     base+'tell'
