@@ -108,7 +108,7 @@
       ++  de-url
         |=  =tape
         ^-  ^tape
-        tape  :: TODO pending de-URL-ification
+        (turn (need (de-urlt:html tape)) |=(a=@t ?:(=(a '+') ' ' a)))
       --  ::  barket
       ::
         %'POST'
