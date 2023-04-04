@@ -22,6 +22,7 @@
   =/  cards  :~
     [%pass base %arvo %e %connect `base %tell]
     [%pass base+/cast %arvo %e %connect `base+/cast %tell]
+    [%pass base+/success %arvo %e %connect `base+/success %tell]
   ==
   [cards this]
 ++  on-save   !>(state)
@@ -40,15 +41,14 @@
     ?+    method.request.q.req  `this
       %'GET'
     ~&  url
-    ?.  =(url '/apps/tell')  !!
-    =/  frnt  
+    ?:  =(url '/apps/tell')
+    =/  tell
       %-  as-octs:mimes:html
       %-  crip
       %-  en-xml:html
         ;html
           ;head
             ;title: %tell
-            ;style: {style}
           ==
           ;body
             ;center
@@ -68,8 +68,40 @@
     :_  this
     :~
       [%give %fact httr %http-response-header !>([200 ~])]
-      [%give %fact httr %http-response-data !>(`frnt)]
+      [%give %fact httr %http-response-data !>(`tell)]
       [%give %kick httr ~]
+      ==  ::  cards
+    ?.  =(url '/apps/tell/success')  !!
+    =/  succ
+      %-  as-octs:mimes:html
+      %-  crip
+      %-  en-xml:html
+        ;html
+          ;head
+            ;title: %tell
+          ==
+          ;body
+            ;center
+              ;div(class "tell")
+                ;h1: Success!
+              ==  ::  div tell
+              ;a(href "/apps/tell"): Back
+            ==  ::  center
+          ==  ::  body
+        ==  ::  html
+    =/  httr  [/http-response/[p.req]]~
+    :_  this
+    :~
+      [%give %fact httr %http-response-header !>([200 ~])]
+      [%give %fact httr %http-response-data !>(`succ)]
+      [%give %kick httr ~]
+      ==  ::  cards
+    ::
+      %'POST'
+    ?.  =(url '/apps/tell/cast')  !!
+    :_  this
+    :~
+      [%pass /cast %tell [our.bowl %tell] %poke %tell-command !>([%cast chat])]
       ==  ::  cards
     ==  ::  request switch
   ::
@@ -149,6 +181,19 @@
     ==
   `this
 ++  on-leave  on-leave:default
-++  on-agent  on-agent:default
+++  on-agent
+  |=  [=wire =sign:agent:gall]
+  ^-  (quip card _this)
+  ?.  =(wire /cast)  !!
+  =/  httr  [/http-response/[p.req]]~
+  =/  head=response-header:http
+    ^-  response-header:http
+    :-  303
+        ['Location' '/apps/tell/success']~
+  :_  this
+  :~  [%give %fact httr %http-response-header !>(head)]
+      [%give %fact httr %http-response-data !>(~)]
+      [%give %kick httr ~]
+  ==
 ++  on-fail   on-fail:default
 --
