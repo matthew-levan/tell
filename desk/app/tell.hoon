@@ -34,75 +34,123 @@
   |=  [=mark =vase]
   ^-  (quip card _this)
   ?+    mark  (on-poke:default [mark vase])
-  ::
       %handle-http-request
     =/  req  !<((pair @ta inbound-request:eyre) vase)
     =/  url  url.request.q.req
     ?+    method.request.q.req  `this
-      %'GET'
-    ~&  url
-    ?:  =(url '/apps/tell')
-    =/  tell
-      %-  as-octs:mimes:html
-      %-  crip
-      %-  en-xml:html
-        ;html
-          ;head
-            ;title: %tell
-          ==
-          ;body
-            ;center
-              ;div(class "tell")
-                ;h1: Broadcast
-                ;form(action "/apps/tell/cast", method "POST")
-                  ;label(for "chat"): Message
-                  ;input(type "text", id "chat", name "chat", placeholder "PSA...")
-                  ;button(type "submit", id "send"): Send
-                ==  ::  form
-              ==  ::  div tell
-            ==  ::  center
-          ==  ::  body
-        ==  ::  html
-      ==  ::  ???
-    =/  httr  [/http-response/[p.req]]~
-    :_  this
-    :~
-      [%give %fact httr %http-response-header !>([200 ~])]
-      [%give %fact httr %http-response-data !>(`tell)]
-      [%give %kick httr ~]
+        %'GET'
+      ?:  =(url '/apps/tell')
+      =/  tell
+        %-  as-octs:mimes:html
+        %-  crip
+        %-  en-xml:html
+          ;html
+            ;head
+              ;title: %tell
+            ==
+            ;body
+              ;center
+                ;div(class "tell")
+                  ;h1: Broadcast
+                  ;form(action "/apps/tell/cast", method "GET")
+                    ;label(for "cord"): Message
+                    ;input(type "text", id "cord", name "cord", placeholder "PSA...")
+                    ;button(type "submit", id "send"): Send
+                  ==  ::  form
+                ==  ::  div tell
+              ==  ::  center
+            ==  ::  body
+          ==  ::  html
+        ==  ::  ???
+      =/  httr  [/http-response/[p.req]]~
+      :_  this
+      :~
+        [%give %fact httr %http-response-header !>([200 ~])]
+        [%give %fact httr %http-response-data !>(`tell)]
+        [%give %kick httr ~]
+        ==  ::  cards
+      ?:  =(url '/apps/tell/success')
+      =/  succ
+        %-  as-octs:mimes:html
+        %-  crip
+        %-  en-xml:html
+          ;html
+            ;head
+              ;title: %tell
+            ==
+            ;body
+              ;center
+                ;div(class "tell")
+                  ;h1: Success!
+                ==  ::  div tell
+                ;a(href "/apps/tell"): Back
+              ==  ::  center
+            ==  ::  body
+          ==  ::  html
+      =/  httr  [/http-response/[p.req]]~
+      :_  this
+      :~
+        [%give %fact httr %http-response-header !>([200 ~])]
+        [%give %fact httr %http-response-data !>(`succ)]
+        [%give %kick httr ~]
       ==  ::  cards
-    ?.  =(url '/apps/tell/success')  !!
-    =/  succ
-      %-  as-octs:mimes:html
-      %-  crip
-      %-  en-xml:html
-        ;html
-          ;head
-            ;title: %tell
-          ==
-          ;body
-            ;center
-              ;div(class "tell")
-                ;h1: Success!
-              ==  ::  div tell
-              ;a(href "/apps/tell"): Back
-            ==  ::  center
-          ==  ::  body
-        ==  ::  html
-    =/  httr  [/http-response/[p.req]]~
-    :_  this
-    :~
-      [%give %fact httr %http-response-header !>([200 ~])]
-      [%give %fact httr %http-response-data !>(`succ)]
-      [%give %kick httr ~]
+      :: thence it should be a GET string w/ quantities embedded in the URL
+      ::  ?cord=Help+I%27m+trapped+in+Carta+Mundi
+      |^
+        =/  tape  (trip url)
+        =/  idx   (find "?cord=" tape)
+        =/  msg   (slag (add (need idx) 6) tape)
+        =/  cord  (crip (de-url msg))
+        :_  this
+        :~
+          [%pass /cast %agent [our.bowl %tell] %poke %tell-command !>([%cast cord])]
+        ==  ::  cards
+      ++  de-url
+        |=  =tape
+        ^-  ^tape
+        tape  :: TODO pending de-URL-ification
+      --  ::  barket
+      ::
+        %'POST'
+      |^
+      ?.  =(url '/apps/tell/cast')  !!
+      ?~  body.request.q.req
+        =/  httr  [/http-response/[p.req]]~
+        :_  this
+        :~
+          [%give %fact httr %http-response-header !>([405 ~])]
+          [%give %fact httr %http-response-data !>(`%stock)]
+          [%give %kick httr ~]
+        ==  ::  cards
+      ~&  >  body.request.q.req
+      ?~  q.u.body.request.q.req
+        =/  httr  [/http-response/[p.req]]~
+        :_  this
+        :~
+          [%give %fact httr %http-response-header !>([405 ~])]
+          [%give %fact httr %http-response-data !>(`%stock)]
+          [%give %kick httr ~]
+        ==  ::  cards
+      ~&  >  body.request.q.req
+      ~&  >>  q.u.body.request.q.req
+      ~&  >>>  (de-json:html q.u.body.request.q.req)
+      =/  json  (de-json:html q.u.body.request.q.req)
+      ~&  >>  (need json)
+      =/  cmd  (dejs-command (need json))
+      ~&  >  cmd
+      :_  this
+      :~
+        [%pass /cast %agent [our.bowl %tell] %poke %tell-command !>([%cast cord.cmd])]
       ==  ::  cards
-    ::
-      %'POST'
-    ?.  =(url '/apps/tell/cast')  !!
-    :_  this
-    :~
-      [%pass /cast %tell [our.bowl %tell] %poke %tell-command !>([%cast chat])]
-      ==  ::  cards
+      ++  dejs-command
+        =,  dejs:format
+        |=  jon=json
+        ^-  command
+        %.  jon
+        %-  of
+        :~  [%cast (ot ~[cord+so])]
+        ==
+      --  ::  barket
     ==  ::  request switch
   ::
       %tell-command
@@ -148,8 +196,8 @@
         |=  =ship
         ?.  =(spon (sein:title our.bowl now.bowl ship))  ~
         `ship
-      -- 
-    ==
+      --   ::  barket
+    ==  ::  %tell-command
   ==  ::  mark
 ::
 ++  on-peek  on-peek:default
@@ -185,7 +233,7 @@
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
   ?.  =(wire /cast)  !!
-  =/  httr  [/http-response/[p.req]]~
+  =/  httr  [/http-response/[-.wire]]~
   =/  head=response-header:http
     ^-  response-header:http
     :-  303
