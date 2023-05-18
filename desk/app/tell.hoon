@@ -122,7 +122,6 @@
           [%give %fact httr %http-response-data !>(`%stock)]
           [%give %kick httr ~]
         ==  ::  cards
-      ~&  >  body.request.q.req
       ?~  q.u.body.request.q.req
         =/  httr  [/http-response/[p.req]]~
         :_  this
@@ -131,13 +130,8 @@
           [%give %fact httr %http-response-data !>(`%stock)]
           [%give %kick httr ~]
         ==  ::  cards
-      ~&  >  body.request.q.req
-      ~&  >>  q.u.body.request.q.req
-      ~&  >>>  (de-json:html q.u.body.request.q.req)
       =/  json  (de-json:html q.u.body.request.q.req)
-      ~&  >>  (need json)
       =/  cmd  (dejs-command (need json))
-      ~&  >  cmd
       :_  this
       :~
         [%pass /cast %agent [our.bowl %tell] %poke %tell-command !>([%cast cord.cmd])]
