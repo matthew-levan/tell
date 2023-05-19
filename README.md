@@ -96,3 +96,19 @@ This is provided by a generator, invoked as:
 - [ ] Associated action (for `%hark` notifications)
 - [ ] Message and who received
 - [ ] A basic HTML front end (planned for next build party)
+
+
+## Testing
+
+A useful snippet for checking behavior:
+
+```sh
+curl -i localhost:8080/~/login -X POST -d "password=lidlut-tabwed-pillex-ridrup"
+curl --header "Content-Type: application/json" \
+     --cookie "urbauth-~zod=0v7.rhijc.0u68a.vshu6.dcrcl.qeqdu" \
+     --request POST \
+     --data '[{"cast":{"cord":"Hello Mars!"}}]' \
+     http://localhost:8080/apps/tell/cast
+```
+
+(modulo the cookie string)
