@@ -14,11 +14,19 @@
   =/  msg  (~(gut by args) 'msg' '')
   |^
   ^-  command
-  ?~  who=(slaw %p (~(gut by args) 'who' ''))
+  ::  Three cases:
+  ::  1. No ships, %cast
+  ?~  (~(got by args) 'who')
     `command`[%cast msg]
-  `command`[%call msg (parse-list-of-ships u.who)]
+  ::  2. One ship, %call
+  =/  who  (slaw %p (~(gut by args) 'who' ''))
+  ?.  =(~ who)
+    `command`[%call msg ~[(need who)]]
+  ::  3. Many ships, %call
+  `command`[%call msg (parse-list-of-ships (~(gut by args) 'who' ''))]
   ++  parse-list-of-ships
     |=  =cord
+    ^-  (list @p)
     (scan (trip cord) cooker)
   ++  parser  (star ;~(pose ace ;~(plug sig fed:ag)))
   ++  lister
