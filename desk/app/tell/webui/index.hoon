@@ -13,13 +13,23 @@
     ~
   =/  msg  (~(gut by args) 'msg' '')
   |^
-  :: TODO parse list of ships instead of single ship
   ^-  command
   ?~  who=(slaw %p (~(gut by args) 'who' ''))
     `command`[%cast msg]
-  `command`[%call msg ~[u.who]]
+  `command`[%call msg (parse-list-of-ships u.who)]
   ++  parse-list-of-ships
-  !!
+    |=  =cord
+    (scan (trip cord) cooker)
+  ++  parser  (star ;~(pose ace ;~(plug sig fed:ag)))
+  ++  lister
+    |=  values=(list ?(@t (pair @t @ud)))
+    =|  points=(list @p)
+    |-
+    ?~  values  points
+    ?@  i.values
+      $(values t.values)
+    $(values t.values, points (weld ~[(@p +.i.values)] points))
+  ++  cooker  (cook lister parser)
   --
 ::
 ++  final  (alert:rudder url.request build)

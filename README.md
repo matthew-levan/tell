@@ -18,11 +18,8 @@ The basic idea is to have a generator-driven app that allows a single Talk messa
 > :chat +dbug
 ```
 
+##  Developers
 
-## Future Work
+### History
 
-- [x] Call anyone.
-- [ ] Read receipts
-- [ ] Associated action (for `%hark` notifications)
-- [ ] Message and who received
-- [ ] A basic HTML front end
+The initial version, which sent messages to sponsees, was created in an Urbit build party in a single working session.  A later session completed a Rudder-based front-end and added arbitrary input.
